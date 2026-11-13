@@ -1,0 +1,37 @@
+---
+import { withBase } from '../../lib/base';
+import type { PostEntry } from '../../lib/posts';
+
+interface Props {
+  posts: PostEntry[];
+  current?: string;
+}
+const { posts, current } = Astro.props;
+const groups = new Map<string, PostEntry[]>();
+for (const post of posts) {
+  const name = post.data.category || '未分类';
+  const list = groups.get(name) ?? [];
+  list.push(post);
+  groups.set(name, list);
+}
+---
+
+<nav class="side-tree" aria-label="分类">
+  {[...groups.entries()].map(([name, items]) => (
+    <details class="side-group" open={items.some((post) => post.id === current)}>
+      <summary>{name}</summary>
+      <ul>
+        {items.map((post) => (
+          <li>
+            <a
+              href={withBase(`posts/${post.id}/`)}
+              aria-current={post.id === current ? 'page' : undefined}
+            >
+              {post.data.title}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </details>
+  ))}
+</nav>

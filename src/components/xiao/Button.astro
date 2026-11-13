@@ -1,0 +1,7 @@
+---
+const { href = '#', class: extraClass, ...rest } = Astro.props;
+---
+
+<a class:list={['x-button', extraClass]} href={href} {...rest}>
+  <slot />
+</a>

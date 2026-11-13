@@ -1,0 +1,49 @@
+---
+import Base from './BaseLayout.astro';
+import PageShell from '../components/xiao/PageShell.astro';
+import PostLicense from '../components/xiao/PostLicense.astro';
+import PostMeta from '../components/xiao/PostMeta.astro';
+import PostTags from '../components/xiao/PostTags.astro';
+import PostTitle from '../components/xiao/PostTitle.astro';
+import SideTree from '../components/site/SideTree.astro';
+import Toc from '../components/site/Toc.astro';
+import { publishedPosts, type PostEntry } from '../lib/posts';
+import { articleHeads } from '../lib/seo';
+
+interface Props {
+  post: PostEntry;
+  headings: { depth: number; slug: string; text: string }[];
+  prev?: PostEntry;
+  next?: PostEntry;
+  /** 页面标识：默认不用传，posts/[...slug].astro 会传文章 id。 */
+  page?: string;
+  /** 版式根节点的附加 class。 */
+  class?: string;
+}
+const { post, headings, page, class: extraClass } = Astro.props;
+const posts = await publishedPosts();
+const heads = articleHeads({
+  slug: post.id,
+  title: post.data.title,
+  description: post.data.description ?? post.data.title,
+  date: post.data.date,
+  updated: post.data.updated,
+  tags: post.data.tags,
+  noindex: post.data.noindex,
+});
+---
+
+<Base title={post.data.title} description={post.data.description} heads={heads} page={page}>
+  <PageShell sidebar="left" class={extraClass}>
+    <SideTree slot="side" posts={posts} current={post.id} />
+    <article class="prose">
+      <PostTitle post={post} />
+      <PostMeta post={post} separator="" />
+      <Toc headings={headings} mobile />
+      <slot />
+      <PostTags post={post} />
+      <PostLicense />
+    </article>
+    <Toc slot="toc" headings={headings} />
+  </PageShell>
+</Base>

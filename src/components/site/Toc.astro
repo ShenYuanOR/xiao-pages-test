@@ -1,0 +1,42 @@
+---
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+interface Props {
+  headings?: Heading[];
+  mobile?: boolean;
+}
+const { headings = [], mobile = false } = Astro.props;
+const items = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+---
+
+{items.length > 0 &&
+  (mobile ? (
+    <details class="toc toc-mobile">
+      <summary class="toc-label">本页目录</summary>
+      <ul>
+        {items.map((heading) => (
+          <li>
+            <a href={`#${heading.slug}`} data-depth={heading.depth}>
+              {heading.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </details>
+  ) : (
+    <nav class="toc toc-desktop" aria-label="本页目录">
+      <div class="toc-label">本页目录</div>
+      <ul>
+        {items.map((heading) => (
+          <li>
+            <a href={`#${heading.slug}`} data-depth={heading.depth}>
+              {heading.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  ))}
