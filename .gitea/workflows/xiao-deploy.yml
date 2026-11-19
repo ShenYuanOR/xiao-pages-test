@@ -1,0 +1,38 @@
+# 由晓生成。版本：2
+# 版本号相同的话，再次连接不会覆盖这份文件。
+name: 发布站点
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+jobs:
+  deploy:
+    runs-on: xiao
+    env:
+      COREPACK_ENABLE_DOWNLOAD_PROMPT: "0"
+      REPO_URL: ${{ github.server_url }}/${{ github.repository }}.git
+      TOKEN: ${{ secrets.GITEA_TOKEN }}
+    steps:
+      - name: 取代码
+        run: |
+          git -c http.extraHeader="Authorization: token $TOKEN" clone --depth 1 --branch "${{ github.ref_name }}" "$REPO_URL" site
+      - name: 安装依赖
+        working-directory: site
+        run: |
+          corepack enable
+          pnpm install --frozen-lockfile
+      - name: 构建
+        working-directory: site
+        env:
+          XIAO_BUILD_SHA: ${{ github.sha }}
+        run: pnpm build
+      - name: 推送到 pages 分支
+        working-directory: site/dist
+        run: |
+          head=$(git -c http.extraHeader="Authorization: token $TOKEN" ls-remote "$REPO_URL" "refs/heads/${{ github.ref_name }}" | cut -f1)
+          if [ "$head" != "${{ github.sha }}" ]; then echo "已有更新的提交 $head，本次不推送"; exit 0; fi
+          touch .nojekyll
+          git init -q -b pages
+          git add -A
+          git -c user.name=xiao-bot -c user.email=xiao-bot@localhost commit -q -m "pages: ${{ github.sha }}"
+          git -c http.extraHeader="Authorization: token $TOKEN" push -f "$REPO_URL" pages

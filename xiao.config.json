@@ -2,12 +2,12 @@
   "$schema": "./xiao.config.schema.json",
   "version": 1,
   "site": {
-    "url": "https://example.com",
-    "base": "/",
+    "url": "http://192.168.1.170:8700/shenyuan/xiao-gate/",
+    "base": "/shenyuan/xiao-gate/",
     "lang": "zh-CN",
     "title": "test",
     "subtitle": "笔记",
-    "description": "一个用 Astro 搭建的笔记站。",
+    "description": "晓的测试站点，用来记录博客模板、主题系统与 SEO 体检的开发过程，以及一些生活随笔。",
     "favicon": "/favicon.svg",
     "ogImage": "",
     "heroImage": "",
@@ -39,18 +39,24 @@
     }
   ],
   "theme": {
-    "preset": "midnight",
-    "colorScheme": "auto",
     "hue": 250,
-    "font": "sans",
-    "fontStack": "",
-    "scale": "normal",
-    "lineHeight": "normal",
-    "density": "normal",
-    "radius": "md",
-    "contentWidth": "prose",
-    "shadow": "soft",
-    "motion": true
+    "id": "default",
+    "mode": "auto",
+    "options": {
+      "font": "mono",
+      "lineHeight": "tight",
+      "density": "compact",
+      "radius": "none",
+      "shadow": "none",
+      "motion": false,
+      "announcement": "这是一条测试公告，用来验证挂件的样子。",
+      "widgets": [
+        "recent",
+        "tags",
+        "archive"
+      ]
+    },
+    "palette": "midnight"
   },
   "seo": {
     "titleTemplate": "%s | 晓",
