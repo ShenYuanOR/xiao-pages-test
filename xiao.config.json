@@ -2,8 +2,8 @@
   "$schema": "./xiao.config.schema.json",
   "version": 1,
   "site": {
-    "url": "http://192.168.1.170:8700/shenyuan/xiao-gate2/",
-    "base": "/shenyuan/xiao-gate2/",
+    "url": "https://shenyuanor.github.io/xiao-pages-test/",
+    "base": "/xiao-pages-test/",
     "lang": "zh-CN",
     "title": "test",
     "subtitle": "笔记",
